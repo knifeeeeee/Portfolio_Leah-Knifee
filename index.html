@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Leah Knifee 品牌视觉设计师作品集，涵盖品牌设计、包装设计、画册、插画、海报与动态视觉。">
+  <meta name="robots" content="index,follow">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Leah Knifee Portfolio">
+  <meta property="og:title" content="Leah Knifee — Brand & Graphic Designer">
+  <meta property="og:description" content="品牌视觉设计师作品集，涵盖品牌设计、包装设计、画册、插画、海报与动态视觉。">
+  <meta property="og:image" content="assets/branding/project-01/cover.webp">
+  <meta property="og:url" content="">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Leah Knifee — Brand & Graphic Designer">
+  <meta name="twitter:description" content="品牌视觉设计师作品集，涵盖品牌设计、包装设计、画册、插画、海报与动态视觉。">
+  <meta name="twitter:image" content="assets/branding/project-01/cover.webp">
+  <script id="seo-json" type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Leah Knifee","jobTitle":"Brand & Graphic Designer","sameAs":["https://www.xiaohongshu.com/user/profile/63b0404e0000000026007f4e"]}</script>
+  <title>Leah Knifee — Brand & Graphic Designer</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a href="#/" class="brand-link">Leah Knifee</a>
+    <nav aria-label="Primary navigation">
+      <a href="#/?section=all">Works</a>
+      <a href="#/?section=about">About</a>
+      <a href="#/?section=contact">Contact</a>
+    </nav>
+  </header>
+  <main id="app"></main>
+  <dialog id="viewer" class="viewer">
+    <button class="viewer-close" type="button" aria-label="关闭">×</button>
+    <button class="viewer-arrow viewer-prev" type="button" aria-label="上一张">‹</button>
+    <div id="viewer-slide"></div>
+    <button class="viewer-arrow viewer-next" type="button" aria-label="下一张">›</button>
+    <p id="viewer-caption"></p>
+    <nav id="viewer-project-nav" aria-label="项目切换">
+      <button type="button" data-project-step="-1">← Previous</button>
+      <button type="button" data-project-step="1">Next →</button>
+    </nav>
+  </dialog>
+  <dialog id="image-lightbox" class="image-lightbox">
+    <button class="image-lightbox-close" type="button" aria-label="关闭大图">×</button>
+    <button class="image-lightbox-arrow image-lightbox-prev" type="button" aria-label="上一张">‹</button>
+    <div class="image-lightbox-stage" role="button" tabindex="0" aria-label="继续放大图片"><img id="image-lightbox-image" alt=""></div>
+    <button class="image-lightbox-arrow image-lightbox-next" type="button" aria-label="下一张">›</button>
+  </dialog>
+  <script src="app.js"></script>
+</body>
+</html>
