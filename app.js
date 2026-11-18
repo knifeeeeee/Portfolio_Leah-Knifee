@@ -260,6 +260,8 @@ function home() {
 }
 
 function initBlockPhysics() {
+  const hero = app.querySelector('.home-hero');
+  const header = document.querySelector('.site-header');
   const stage = app.querySelector('.block-stage');
   const blocks = [...stage.querySelectorAll('.block-piece')];
   const scatterButton = app.querySelector('#scatter-blocks');
@@ -269,6 +271,17 @@ function initBlockPhysics() {
     block.style.left = `${block._x}px`;
     block.style.top = `${block._y}px`;
     block.style.rotate = `${block._angle}deg`;
+  }
+
+  function getSpace() {
+    const heroBounds = hero.getBoundingClientRect();
+    const stageBounds = stage.getBoundingClientRect();
+    return {
+      left: heroBounds.left - stageBounds.left,
+      top: heroBounds.top + header.offsetHeight - stageBounds.top,
+      right: heroBounds.right - stageBounds.left,
+      bottom: heroBounds.bottom - stageBounds.top
+    };
   }
 
   function reset() {
@@ -348,6 +361,7 @@ function initBlockPhysics() {
     const step = Math.min(1.8, (now - last) / 16.67 || 1);
     last = now;
     let activeCount = 0;
+    const space = getSpace();
     blocks.forEach(block => {
       if (!block._active || block._dragging) return;
       activeCount++;
@@ -355,12 +369,16 @@ function initBlockPhysics() {
       block._x += block._vx * step;
       block._y += block._vy * step;
       block._angle = Math.max(-22, Math.min(22, block._angle + block._va * step));
-      const floor = stage.clientHeight - block.offsetHeight;
-      const right = stage.clientWidth - block.offsetWidth;
-      if (block._x < 0 || block._x > right) {
-        block._x = Math.max(0, Math.min(right, block._x));
+      const floor = space.bottom - block.offsetHeight;
+      const right = space.right - block.offsetWidth;
+      if (block._x < space.left || block._x > right) {
+        block._x = Math.max(space.left, Math.min(right, block._x));
         block._vx *= -.38;
         block._va += block._vx * .05;
+      }
+      if (block._y < space.top) {
+        block._y = space.top;
+        block._vy *= -.26;
       }
       const collided = resolveCollisions(block, true);
       if (block._y >= floor) {
@@ -409,8 +427,9 @@ function initBlockPhysics() {
       block._vx = (event.clientX - drag.lastX) / elapsed * 16;
       block._vy = (event.clientY - drag.lastY) / elapsed * 16;
       drag.time = performance.now(); drag.lastX = event.clientX; drag.lastY = event.clientY;
-      block._x = Math.max(0, Math.min(stage.clientWidth - block.offsetWidth, drag.left + dx));
-      block._y = Math.max(0, Math.min(stage.clientHeight - block.offsetHeight, drag.top + dy));
+      const space = getSpace();
+      block._x = Math.max(space.left, Math.min(space.right - block.offsetWidth, drag.left + dx));
+      block._y = Math.max(space.top, Math.min(space.bottom - block.offsetHeight, drag.top + dy));
       resolveCollisions(block, false);
       render(block);
     });
