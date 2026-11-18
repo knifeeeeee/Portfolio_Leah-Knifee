@@ -831,6 +831,7 @@ function posters(content) {
   let active = 0;
   let raf = 0;
   let swipe = null;
+  let morph = 0;
 
   function render() {
     cards.forEach((card, index) => {
@@ -852,7 +853,7 @@ function posters(content) {
     raf = 0;
     const available = Math.max(1, stage.offsetHeight - innerHeight);
     const progress = Math.max(0, Math.min(1, -stage.getBoundingClientRect().top / available));
-    const morph = reduceMotion.matches ? 1 : Math.min(1, progress / .22);
+    morph = reduceMotion.matches ? 1 : Math.min(1, progress / .22);
     sticky.style.setProperty('--morph', morph.toFixed(3));
     const inset = innerWidth < 768 ? [5, 4] : innerWidth < 1200 ? [8, 5] : [18, 11];
     deck.style.transform = reduceMotion.matches ? 'none' : `translate(${(1 - morph) * inset[0]}vw, ${(1 - morph) * inset[1]}vh) scale(${.62 + morph * .38})`;
@@ -866,7 +867,7 @@ function posters(content) {
     const available = stage.offsetHeight - innerHeight;
     scrollTo({ top: scrollY + stage.getBoundingClientRect().top + available * (.22 + index / (cards.length - 1) * .78), behavior: reduceMotion.matches ? 'auto' : 'smooth' });
   }
-  cards.forEach((card, index) => card.addEventListener('click', () => index === active ? openPosterViewer(posterStudies[index], index) : scrollToPoster(index)));
+  cards.forEach((card, index) => card.addEventListener('click', () => index === active && morph >= .98 ? openPosterViewer(posterStudies[index], index) : scrollToPoster(index)));
   dots.forEach((dot, index) => dot.addEventListener('click', () => scrollToPoster(index)));
   sticky.addEventListener('pointerdown', event => { swipe = { x:event.clientX, y:event.clientY }; });
   sticky.addEventListener('pointerup', event => {
