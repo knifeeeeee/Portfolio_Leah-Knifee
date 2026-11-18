@@ -913,18 +913,18 @@ function videoCard(project, projectIndex, copyIndex) {
 function videos(content) {
   document.body.classList.add('video-page');
   const tablet = matchMedia('(min-width: 768px) and (max-width: 1199px)').matches;
-  const copies = tablet ? [1] : [0, 1, 2];
+  if (tablet) {
+    document.body.classList.add('video-tablet-direct');
+    openVideoPlayer(0, content);
+    return;
+  }
+  const copies = [0, 1, 2];
   content.innerHTML = `<section class="video-showcase"><p>DRAG · SCROLL · HOVER</p><div class="video-carousel" tabindex="0"><div class="video-track">${copies.flatMap(copy => videoStudies.map((project, index) => videoCard(project, index, copy))).join('')}</div></div></section>`;
   const carousel = content.querySelector('.video-carousel');
   const track = content.querySelector('.video-track');
   const cards = [...content.querySelectorAll('.video-card')];
   const controller = new AbortController();
   const signal = controller.signal;
-  if (tablet) {
-    cards.forEach(card => card.addEventListener('click', () => openVideoPlayer(Number(card.dataset.project), content), { signal }));
-    cleanup = () => controller.abort();
-    return;
-  }
   let position = 0, setWidth = 1, raf = 0, last = performance.now(), dragging = false, hovering = false, moved = false, startX = 0, startPosition = 0, pressed = null;
   function draw() { if (position >= setWidth * 2) position -= setWidth; if (position < 0) position += setWidth; track.style.transform = `translate3d(${-position}px,0,0)`; }
   function measure() { setWidth = cards[videoStudies.length].offsetLeft - cards[0].offsetLeft; position = setWidth; draw(); }
