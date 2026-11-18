@@ -262,6 +262,10 @@ h1,h2 { margin:0; font-weight:700; line-height:.86; letter-spacing:-.07em; }
   #viewer-slide .art--image { width:auto; height:auto; max-width:72vw; max-height:72svh; overflow:visible; background:transparent; box-shadow:none; }
   #viewer-slide .art--image img { position:static; width:auto; height:auto; max-width:72vw; max-height:72svh; box-shadow:0 18px 48px rgba(0,0,0,.09),0 3px 12px rgba(0,0,0,.05); }
   .poster-card { top:49%; }
+  .video-carousel { overflow-x:auto; overflow-y:hidden; touch-action:pan-x; scroll-snap-type:x mandatory; overscroll-behavior-x:contain; scrollbar-width:none; }
+  .video-carousel::-webkit-scrollbar { display:none; }
+  .video-track { transform:none !important; }
+  .video-card { scroll-snap-align:start; }
   .video-player-view { position:fixed; z-index:30; inset:64px 0 0; padding:29vh 4vw 90px; }
   .video-player-back { bottom:3vh; }
   .video-player-layout { grid-template-columns:minmax(0,1fr) minmax(330px,42vw); gap:32px; }
