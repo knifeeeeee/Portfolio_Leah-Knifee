@@ -165,9 +165,11 @@ h1,h2 { margin:0; font-weight:700; line-height:.86; letter-spacing:-.07em; }
 .poster-page .category-heading .all-projects-link { position:fixed; top:82px; right:3vw; }
 .poster-page .poster-stage { margin:-13vh -3vw -6vw; }
 .poster-sticky { position:sticky; top:0; height:100svh; overflow:hidden; touch-action:pan-y; perspective:1500px; --morph:0; }
-.poster-gesture { position:absolute; z-index:25; right:3vw; bottom:8vh; display:flex; align-items:center; gap:9px; color:#555; opacity:clamp(0,calc(1 - var(--morph) * 4),1); pointer-events:none; }
-.poster-gesture span { display:grid; place-items:center; width:34px; height:34px; border:1px solid #bbb; border-radius:50%; font-size:20px; }
-.poster-gesture b { font-size:11px; letter-spacing:.04em; }
+.poster-gesture { position:absolute; z-index:25; right:3vw; bottom:8vh; width:48px; height:48px; display:grid; place-items:center; opacity:clamp(0,calc(1 - var(--morph) * 4),1); }
+.poster-gesture img { width:32px; height:32px; object-fit:contain; }
+.poster-gesture span { position:absolute; right:0; bottom:calc(100% + 4px); padding:4px 7px; border-radius:4px; color:#fff; background:#111; font-size:10px; font-weight:700; opacity:0; transform:translateY(5px); transition:.18s ease; pointer-events:none; }
+.poster-gesture:hover span { opacity:1; transform:none; }
+.poster-page .back-top { display:none; }
 .poster-deck { position:absolute; inset:0; transform-style:preserve-3d; }
 .poster-card { position:absolute; top:51%; left:50%; width:min(25vw,calc(58svh * .707)); aspect-ratio:210/297; min-width:0; min-height:0; color:#aaa; background:#eee; box-shadow:0 20px 55px rgba(0,0,0,.09); transform:translate(-50%,-50%) translateX(calc(var(--offset) * min(31vw,390px))) translateZ(calc(var(--distance) * -130px)) rotateY(calc(var(--offset) * -28deg)); transition:transform .6s cubic-bezier(.2,.75,.25,1), opacity .35s ease; }
 .poster-card img { display:block; width:100%; height:100%; object-fit:cover; }
@@ -355,8 +357,7 @@ h1,h2 { margin:0; font-weight:700; line-height:.86; letter-spacing:-.07em; }
   .video-player-nav { right:20px; bottom:18px; left:42%; margin-top:0; }
   .back-top { width:72px; height:84px; right:4px; bottom:6px; }
   .video-page:has(.video-player-view) .back-top { display:none; }
-  .poster-gesture { right:16px; bottom:11vh; max-width:190px; }
-  .poster-gesture b { font-size:10px; }
+  .poster-gesture { right:16px; bottom:11vh; }
 }
 
 @media (hover: none) and (pointer: coarse) {

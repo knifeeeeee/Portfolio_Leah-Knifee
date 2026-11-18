@@ -818,7 +818,7 @@ function posters(content) {
   document.body.classList.add('poster-page');
   content.innerHTML = `<section class="poster-stage" style="height:${100 + posterStudies.length * 18}svh"><div class="poster-sticky">
     <div class="poster-deck">${posterStudies.map((project, index) => `<button class="poster-card" data-index="${index}" type="button" aria-label="${project.title}"><img data-src="${project.cover}" alt="${project.name}" decoding="async"></button>`).join('')}</div>
-    <div class="poster-gesture" aria-hidden="true"><span>↕</span><b>SCROLL · 下滑 / 左右滑动</b></div>
+    <div class="poster-gesture" role="img" aria-label="Scroll"><img src="assets/icons/scroll-gesture.svg" alt=""><span>Scroll</span></div>
     <div class="poster-pagination">${posterStudies.map((_, index) => `<button class="poster-dot" data-index="${index}" type="button" aria-label="海报 ${index + 1}"></button>`).join('')}</div>
     <div class="poster-info"><div><h2></h2><p></p></div></div>
   </div></section>`;
