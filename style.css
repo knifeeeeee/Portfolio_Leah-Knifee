@@ -348,7 +348,7 @@ h1,h2 { margin:0; font-weight:700; line-height:.86; letter-spacing:-.07em; }
   .video-carousel { inset:31vh 0 18px; }
   .video-track { padding-inline:20px; }
   .video-player-view { position:fixed; z-index:30; inset:58px 0 0; padding:76px 20px 112px; }
-  .video-player-back { top:18px; right:20px; bottom:auto; left:auto; }
+  .video-player-back { top:74px; right:20px; bottom:auto; left:auto; }
   .video-player-layout { width:100%; grid-template-columns:1fr; align-items:start; gap:20px; }
   .video-player-media { width:min(100%,calc(46svh * var(--ratio-number))); max-height:46svh; }
   .video-player-side { height:auto; }
