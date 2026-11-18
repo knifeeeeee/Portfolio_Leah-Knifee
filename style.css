@@ -165,9 +165,9 @@ h1,h2 { margin:0; font-weight:700; line-height:.86; letter-spacing:-.07em; }
 .poster-page .category-heading .all-projects-link { position:fixed; top:82px; right:3vw; }
 .poster-page .poster-stage { margin:-13vh -3vw -6vw; }
 .poster-sticky { position:sticky; top:0; height:100svh; overflow:hidden; touch-action:pan-y; perspective:1500px; --morph:0; }
-.poster-gesture { position:absolute; z-index:25; right:3vw; bottom:8vh; width:48px; height:48px; display:grid; place-items:center; opacity:clamp(0,calc(1 - var(--morph) * 4),1); }
-.poster-gesture img { width:32px; height:32px; object-fit:contain; }
-.poster-gesture span { position:absolute; right:0; bottom:calc(100% + 4px); padding:4px 7px; border-radius:4px; color:#fff; background:#111; font-size:10px; font-weight:700; opacity:0; transform:translateY(5px); transition:.18s ease; pointer-events:none; }
+.poster-gesture { position:absolute; z-index:25; bottom:3vw; left:3vw; width:60px; height:60px; display:grid; place-items:center; opacity:clamp(0,calc(1 - var(--morph) * 4),1); }
+.poster-gesture img { width:48px; height:48px; object-fit:contain; }
+.poster-gesture span { position:absolute; bottom:calc(100% + 4px); left:0; padding:4px 7px; border-radius:4px; color:#fff; background:#111; font-size:10px; font-weight:700; opacity:0; transform:translateY(5px); transition:.18s ease; pointer-events:none; }
 .poster-gesture:hover span { opacity:1; transform:none; }
 .poster-page .back-top { display:none; }
 .poster-deck { position:absolute; inset:0; transform-style:preserve-3d; }
@@ -357,7 +357,7 @@ h1,h2 { margin:0; font-weight:700; line-height:.86; letter-spacing:-.07em; }
   .video-player-nav { right:20px; bottom:18px; left:42%; margin-top:0; }
   .back-top { width:72px; height:84px; right:4px; bottom:6px; }
   .video-page:has(.video-player-view) .back-top { display:none; }
-  .poster-gesture { right:16px; bottom:11vh; }
+  .poster-gesture { bottom:24px; left:20px; }
 }
 
 @media (hover: none) and (pointer: coarse) {
