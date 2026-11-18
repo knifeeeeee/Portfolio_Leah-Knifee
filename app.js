@@ -888,7 +888,7 @@ function posters(content) {
 
 function videoCard(project, projectIndex, copyIndex) {
   const height = project.ratioNumber > 1.5 ? '29vh' : project.ratioNumber > 1.1 ? '34vh' : project.ratioNumber > .85 ? '38vh' : project.ratioNumber > .65 ? '43vh' : '45vh';
-  return `<button class="video-card" type="button" data-project="${projectIndex}" ${copyIndex === 1 ? '' : 'aria-hidden="true" tabindex="-1"'}><span class="video-card-caption"><span>${project.title}</span><span>${project.year}</span></span><span class="video-thumb" style="--ratio:${project.ratio};--height:${height}"><img src="${project.cover}" alt="" loading="${copyIndex === 1 ? 'eager' : 'lazy'}" decoding="async"></span></button>`;
+  return `<button class="video-card" type="button" data-project="${projectIndex}" ${copyIndex === 1 ? '' : 'aria-hidden="true" tabindex="-1"'}><span class="video-card-caption"><span>${project.title}</span><span>${project.year}</span></span><span class="video-thumb" style="--ratio:${project.ratio};--height:${height}"><img src="${project.cover}" alt="" loading="eager" decoding="async"></span></button>`;
 }
 
 function videos(content) {
