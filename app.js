@@ -3,6 +3,7 @@ const viewer = document.querySelector('#viewer');
 const imageLightbox = document.querySelector('#image-lightbox');
 const imageLightboxStage = imageLightbox.querySelector('.image-lightbox-stage');
 const imageLightboxImage = document.querySelector('#image-lightbox-image');
+let lightboxPanX = 0, lightboxPanY = 0, lightboxDrag = null;
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
 const names = ['Branding', 'Packaging', 'Book', 'Poster', 'Illustration', 'Video', 'Play'];
 const counts = [4, 7, 9, 6, 3, 5, 8];
@@ -421,7 +422,14 @@ function initBlockPhysics() {
       block._dragging = false;
       block.classList.remove('is-dragging');
       block.releasePointerCapture(event.pointerId);
-      if (!moved) location.hash = `#/work/${block.dataset.category}`;
+      if (!moved) {
+        const touchTap = event.pointerType !== 'mouse' && matchMedia('(hover: none)').matches;
+        if (touchTap && !block.classList.contains('is-tap-active')) {
+          blocks.forEach(item => item.classList.toggle('is-tap-active', item === block));
+        } else {
+          location.hash = `#/work/${block.dataset.category}`;
+        }
+      }
       else if (!reduceMotion.matches) {
         block._active = true;
         block._va = Math.max(-3, Math.min(3, block._vx * .18 + torque));
@@ -618,6 +626,8 @@ function detail(categoryName, id) {
 function renderImageLightbox() {
   const item = lightboxItems[lightboxIndex];
   lightboxZoom = 1;
+  lightboxPanX = lightboxPanY = 0;
+  imageLightboxStage.classList.remove('is-panning');
   imageLightboxImage.style.transform = '';
   imageLightboxImage.style.transformOrigin = 'center';
   imageLightboxImage.src = item.src;
@@ -749,11 +759,48 @@ imageLightboxImage.addEventListener('load', () => {
 });
 function zoomLightbox(clientX, clientY) {
   const bounds = imageLightboxStage.getBoundingClientRect();
+  const previousScale = lightboxZoom === 1 ? 1 : lightboxZoom === 2 ? 1.8 : 2.8;
   lightboxZoom = Math.min(3, lightboxZoom + 1);
-  imageLightboxImage.style.transformOrigin = `${(clientX - bounds.left) / bounds.width * 100}% ${(clientY - bounds.top) / bounds.height * 100}%`;
-  imageLightboxImage.style.transform = `scale(${lightboxZoom === 2 ? 1.8 : 2.8})`;
+  const scale = lightboxZoom === 2 ? 1.8 : 2.8;
+  lightboxPanX -= (clientX - bounds.left - bounds.width / 2) * (scale / previousScale - 1);
+  lightboxPanY -= (clientY - bounds.top - bounds.height / 2) * (scale / previousScale - 1);
+  updateLightboxTransform();
 }
-imageLightboxStage.addEventListener('click', event => zoomLightbox(event.clientX, event.clientY));
+function updateLightboxTransform() {
+  const bounds = imageLightboxStage.getBoundingClientRect();
+  const scale = lightboxZoom === 1 ? 1 : lightboxZoom === 2 ? 1.8 : 2.8;
+  const limitX = bounds.width * (scale - 1) / 2;
+  const limitY = bounds.height * (scale - 1) / 2;
+  lightboxPanX = Math.max(-limitX, Math.min(limitX, lightboxPanX));
+  lightboxPanY = Math.max(-limitY, Math.min(limitY, lightboxPanY));
+  imageLightboxImage.style.transform = `translate3d(${lightboxPanX}px,${lightboxPanY}px,0) scale(${scale})`;
+}
+imageLightboxStage.addEventListener('pointerdown', event => {
+  lightboxDrag = { x:event.clientX, y:event.clientY, panX:lightboxPanX, panY:lightboxPanY, moved:false };
+  imageLightboxStage.setPointerCapture(event.pointerId);
+  if (lightboxZoom > 1) imageLightboxStage.classList.add('is-panning');
+});
+imageLightboxStage.addEventListener('pointermove', event => {
+  if (!lightboxDrag || lightboxZoom === 1) return;
+  const dx = event.clientX - lightboxDrag.x;
+  const dy = event.clientY - lightboxDrag.y;
+  lightboxDrag.moved ||= Math.hypot(dx, dy) > 5;
+  lightboxPanX = lightboxDrag.panX + dx;
+  lightboxPanY = lightboxDrag.panY + dy;
+  updateLightboxTransform();
+});
+imageLightboxStage.addEventListener('pointerup', event => {
+  if (!lightboxDrag) return;
+  const moved = lightboxDrag.moved;
+  lightboxDrag = null;
+  imageLightboxStage.classList.remove('is-panning');
+  imageLightboxStage.releasePointerCapture(event.pointerId);
+  if (!moved) zoomLightbox(event.clientX, event.clientY);
+});
+imageLightboxStage.addEventListener('pointercancel', () => {
+  lightboxDrag = null;
+  imageLightboxStage.classList.remove('is-panning');
+});
 imageLightboxStage.addEventListener('keydown', event => {
   if (!['Enter', ' '].includes(event.key)) return;
   event.preventDefault();
@@ -771,6 +818,7 @@ function posters(content) {
   document.body.classList.add('poster-page');
   content.innerHTML = `<section class="poster-stage" style="height:${100 + posterStudies.length * 18}svh"><div class="poster-sticky">
     <div class="poster-deck">${posterStudies.map((project, index) => `<button class="poster-card" data-index="${index}" type="button" aria-label="${project.title}"><img data-src="${project.cover}" alt="${project.name}" decoding="async"></button>`).join('')}</div>
+    <div class="poster-gesture" aria-hidden="true"><span>↕</span><b>SCROLL · 下滑 / 左右滑动</b></div>
     <div class="poster-pagination">${posterStudies.map((_, index) => `<button class="poster-dot" data-index="${index}" type="button" aria-label="海报 ${index + 1}"></button>`).join('')}</div>
     <div class="poster-info"><div><h2></h2><p></p></div></div>
   </div></section>`;
@@ -782,6 +830,7 @@ function posters(content) {
   const info = content.querySelector('.poster-info');
   let active = 0;
   let raf = 0;
+  let swipe = null;
 
   function render() {
     cards.forEach((card, index) => {
@@ -819,6 +868,15 @@ function posters(content) {
   }
   cards.forEach((card, index) => card.addEventListener('click', () => index === active ? openPosterViewer(posterStudies[index], index) : scrollToPoster(index)));
   dots.forEach((dot, index) => dot.addEventListener('click', () => scrollToPoster(index)));
+  sticky.addEventListener('pointerdown', event => { swipe = { x:event.clientX, y:event.clientY }; });
+  sticky.addEventListener('pointerup', event => {
+    if (!swipe) return;
+    const dx = event.clientX - swipe.x;
+    const dy = event.clientY - swipe.y;
+    swipe = null;
+    if (Math.abs(dx) > 44 && Math.abs(dx) > Math.abs(dy)) scrollToPoster(Math.max(0, Math.min(cards.length - 1, active + (dx < 0 ? 1 : -1))));
+  });
+  sticky.addEventListener('pointercancel', () => { swipe = null; });
   render(); update();
   cleanup = () => {
     if (raf) cancelAnimationFrame(raf);
@@ -829,7 +887,7 @@ function posters(content) {
 
 function videoCard(project, projectIndex, copyIndex) {
   const height = project.ratioNumber > 1.5 ? '29vh' : project.ratioNumber > 1.1 ? '34vh' : project.ratioNumber > .85 ? '38vh' : project.ratioNumber > .65 ? '43vh' : '45vh';
-  return `<button class="video-card" type="button" data-project="${projectIndex}" ${copyIndex === 1 ? '' : 'aria-hidden="true" tabindex="-1"'}><span class="video-card-caption"><span>${project.title}</span><span>${project.year}</span></span><span class="video-thumb" style="--ratio:${project.ratio};--height:${height}"><img src="${project.cover}" alt="" loading="lazy"></span></button>`;
+  return `<button class="video-card" type="button" data-project="${projectIndex}" ${copyIndex === 1 ? '' : 'aria-hidden="true" tabindex="-1"'}><span class="video-card-caption"><span>${project.title}</span><span>${project.year}</span></span><span class="video-thumb" style="--ratio:${project.ratio};--height:${height}"><img src="${project.cover}" alt="" loading="${copyIndex === 1 ? 'eager' : 'lazy'}" decoding="async"></span></button>`;
 }
 
 function videos(content) {
